@@ -15,9 +15,9 @@ public class UserDaoService {
     private static int usersCount = 3;
 
     static {
-        users.add(User.builder().id(1).name("Kenneth").joinDate(new Date()).build());
-        users.add(User.builder().id(2).name("Alice").joinDate(new Date()).build());
-        users.add(User.builder().id(3).name("Elena").joinDate(new Date()).build());
+        users.add(User.builder().id(1).name("Kenneth").joinDate(new Date()).password("pwd111").ssn("701010-1111111").build());
+        users.add(User.builder().id(2).name("Alice").joinDate(new Date()).password("pwd222").ssn("801212-2111111").build());
+        users.add(User.builder().id(3).name("Elena").joinDate(new Date()).password("pwd333").ssn("901111-1234567").build());
     }
 
     public List<User> findAll() {
