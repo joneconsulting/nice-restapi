@@ -50,4 +50,29 @@ public class UserController {
 
         return ResponseEntity.created(location).build();
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable(value = "id") int id) {
+        User user = service.deleteById(id);
+
+        if (user == null) {
+            throw new UserNotFoundException("id-" + id);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> modifyUserById(@PathVariable(value = "id") int id,
+                               @RequestBody User user) {
+        user.setId(id);
+        User modifiedUser = service.updateUserById(user);
+
+        if (modifiedUser == null) {
+            throw new UserNotFoundException("id-" + id);
+        }
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().build().toUri();
+
+        return ResponseEntity.created(location).build();
+    }
 }
