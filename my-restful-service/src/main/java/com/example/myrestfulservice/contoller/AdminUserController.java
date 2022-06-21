@@ -26,7 +26,8 @@ public class AdminUserController {
         this.service = service;
     }
 
-    @GetMapping("/v1/admin/users/{id}")
+//    @GetMapping("/v1/admin/users/{id}")
+    @GetMapping(value = "/admin/users/{id}/", params = "version=1")
     public MappingJacksonValue retrieveUserById(@PathVariable(value = "id") int id) {
         User user = service.findOne(id);
 
@@ -44,7 +45,8 @@ public class AdminUserController {
         return mapping;
     }
 
-    @GetMapping("/v2/admin/users/{id}")
+//    @GetMapping("/v2/admin/users/{id}")
+    @GetMapping(value = "/admin/users/{id}/", params = "version=2")
     public MappingJacksonValue retrieveUserByIdV2(@PathVariable(value = "id") int id) {
         User user = service.findOne(id);
 
@@ -55,6 +57,7 @@ public class AdminUserController {
         UserV2 userV2 = UserV2.builder()
                 .id(user.getId())
                 .name(user.getName())
+                .joinDate(user.getJoinDate())
                 .ssn(user.getSsn())
                 .password(user.getPassword())
                 .grade("VIP")
