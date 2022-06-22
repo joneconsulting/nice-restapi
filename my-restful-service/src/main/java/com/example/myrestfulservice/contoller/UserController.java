@@ -4,12 +4,18 @@ import com.example.myrestfulservice.bean.User;
 import com.example.myrestfulservice.exception.UserNotFoundException;
 import com.example.myrestfulservice.service.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,19 +29,33 @@ public class UserController {
     }
 
     @GetMapping("")
-    public List<User> retrieveAllUsers() {
-        return service.findAll();
+    public ResponseEntity<CollectionModel<EntityModel<User>>> retrieveAllUsers() {
+        List<EntityModel<User>> result = new ArrayList<>();
+        List<User> users = service.findAll();
+
+        for (User user : users) {
+            EntityModel entityModel = EntityModel.of(user);
+            entityModel.add(linkTo(methodOn(this.getClass()).retrieveUserById(user.getId())).withRel("view"));
+
+            result.add(entityModel);
+        }
+
+        return ResponseEntity.ok(CollectionModel.of(result, linkTo(methodOn(this.getClass()).retrieveAllUsers()).withSelfRel()));
     }
 
     @GetMapping("/{id}")
-    public User retrieveUserById(@PathVariable(value = "id") int id) {
+    public ResponseEntity retrieveUserById(@PathVariable(value = "id") int id) {
         User user = service.findOne(id);
 
         if (user == null) {
             throw new UserNotFoundException("id-" + id);
         }
 
-        return user;
+        EntityModel entityModel = EntityModel.of(user);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+        entityModel.add(linkTo.withRel("all-users"));
+
+        return ResponseEntity.ok(entityModel);
     }
 
     @PostMapping("")
