@@ -1,11 +1,14 @@
 server:
-  port: 8088
+  port: 9000
 
 logging:
   level:
     org.springframework: info
 
 spring:
+  messages:
+    basename: messages
+    fallback-to-system-locale: false
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
