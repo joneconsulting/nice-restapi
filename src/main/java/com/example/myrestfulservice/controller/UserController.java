@@ -3,6 +3,9 @@ package com.example.myrestfulservice.controller;
 import com.example.myrestfulservice.beans.User;
 import com.example.myrestfulservice.exception.UserNotFoundException;
 import com.example.myrestfulservice.service.UserDaoService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -30,6 +33,7 @@ public class UserController {
     }
 
     @GetMapping
+    @ApiOperation(value = "전체 사용자 목록 조회", notes = "등록된 전체 사용자의 목록을 조회합니다.")
     public ResponseEntity<CollectionModel<EntityModel<User>>> retrieveAllUsers() {
         List<User> users = service.findAll();
         List<EntityModel<User>> result = new ArrayList<>();
@@ -46,6 +50,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "사용자 상세정보 조회", notes = "사용자 아이디를 이용하여 사용자의 정보를 조회합니다.")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "사용자 아이디", required = true, paramType = "path")
+    })
     public ResponseEntity retrieveUser(@PathVariable(value = "id") int id) {
         User user = service.findOne(id);
 
