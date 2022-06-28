@@ -4,9 +4,14 @@ import com.example.myrestfulservice.beans.User;
 import com.example.myrestfulservice.exception.UserNotFoundException;
 import com.example.myrestfulservice.service.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -28,14 +33,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User retrieveUser(@PathVariable(value = "id") int id) {
+    public ResponseEntity retrieveUser(@PathVariable(value = "id") int id) {
         User user = service.findOne(id);
 
         if (user == null) {
             throw new UserNotFoundException("id-" + id);
         }
 
-        return user;
+        EntityModel entityModel = EntityModel.of(user);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers()); // http://localhost:8088/users
+        entityModel.add(linkTo.withRel("all-users"));
+
+        return ResponseEntity.ok(entityModel);
     }
 
     // http://localhost:8088/users/4
