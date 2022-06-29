@@ -72,4 +72,21 @@ public class UserJpaController {
 
         return ResponseEntity.ok(entityModel);
     }
+
+    @DeleteMapping(value = "/{id}")
+    public void deleteUserById(@PathVariable(value = "id") int id) {
+        service.deleteUserById(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User savedUser = service.createUser(user);
+
+        // http://localhost:8088/jpa/users
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
 }

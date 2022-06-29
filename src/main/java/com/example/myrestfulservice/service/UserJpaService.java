@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,5 +40,16 @@ public class UserJpaService {
         User user = userRepository.findByName(name);
 
         return user;
+    }
+
+    public void deleteUserById(int id) {
+        userRepository.deleteById(id);
+    }
+
+    public User createUser(User user) {
+        user.setJoinDate(new Date());
+        User savedUser = userRepository.save(user);
+
+        return savedUser;
     }
 }

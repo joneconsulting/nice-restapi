@@ -18,7 +18,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(value = {"password", "ssn"})
+//@JsonIgnoreProperties(value = {"password", "ssn"})
 @ApiModel(description = "사용자 상세 정보")
 @Entity
 public class User {
