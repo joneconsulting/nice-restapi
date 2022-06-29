@@ -4,6 +4,7 @@ import com.example.myrestfulservice.beans.User;
 import com.example.myrestfulservice.exception.UserNotFoundException;
 import com.example.myrestfulservice.service.UserDaoService;
 import com.example.myrestfulservice.service.UserJpaService;
+import com.example.myrestfulservice.vo.ResponseData;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -35,10 +36,19 @@ public class UserJpaController {
 
     @GetMapping
     @ApiOperation(value = "전체 사용자 목록 조회(DB)", notes = "DB에 저장된 전체 사용자의 목록을 조회합니다.")
-    public List<User> retrieveAllUsers() {
+    public ResponseEntity retrieveAllUsers() {
         List<User> users = service.getAllUsers();
 
-        return users;
+        ResponseData responseData = ResponseData.builder()
+                .count(users == null || users.isEmpty() ? 0 : users.size())
+                .users(users)
+                .build();
+
+        EntityModel entityModel = EntityModel.of(responseData);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+        entityModel.add(linkTo.withSelfRel());
+
+        return ResponseEntity.ok(entityModel);
     }
 
     // http://localhost:8088/jpa/users/90001 -> String -> Integer (casting)

@@ -2,8 +2,15 @@ package com.example.myrestfulservice.service;
 
 import com.example.myrestfulservice.beans.User;
 import com.example.myrestfulservice.repository.UserRepository;
+import com.example.myrestfulservice.vo.ResponseData;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.EntityMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,10 +29,6 @@ public class UserJpaService {
 
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
-
-        users.stream().forEach(v -> {
-            log.info("User -> " + v.getId() + "/" + v.getName());
-        });
 
         return users;
     }
