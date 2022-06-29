@@ -2,6 +2,7 @@ package com.example.myrestfulservice.service;
 
 import com.example.myrestfulservice.beans.Post;
 import com.example.myrestfulservice.beans.User;
+import com.example.myrestfulservice.repository.PostRepository;
 import com.example.myrestfulservice.repository.UserRepository;
 import com.example.myrestfulservice.vo.ResponseData;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,12 @@ import java.util.Optional;
 @Slf4j
 public class UserJpaService {
     private UserRepository userRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    public UserJpaService(UserRepository userRepository) {
+    public UserJpaService(UserRepository userRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     public List<User> getAllUsers() {
@@ -76,6 +79,9 @@ public class UserJpaService {
         return user;
     }
 
+    /*
+    Post
+     */
     public List<Post> getAllPostsByUser(int id) {
         Optional<User> _optional = userRepository.findById(id);
 
@@ -85,5 +91,19 @@ public class UserJpaService {
 
         return _optional.get().getPosts() == null || _optional.get().getPosts().isEmpty()
                 ? new ArrayList<>() : _optional.get().getPosts();
+    }
+
+    public Post createPost(int id, Post post) {
+        Optional<User> _optional = userRepository.findById(id);
+
+        if (!_optional.isPresent()) {
+            return null;
+        }
+
+        User storedUser = _optional.get();
+        post.setUser(storedUser);
+        postRepository.save(post);
+
+        return post;
     }
 }

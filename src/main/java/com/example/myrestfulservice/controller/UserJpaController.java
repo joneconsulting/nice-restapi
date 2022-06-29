@@ -126,4 +126,18 @@ public class UserJpaController {
 
         return posts;
     }
+
+    @PostMapping(value = "/{id}/posts")
+    public ResponseEntity createPostByUser(@PathVariable(value = "id") int id,
+                                           @RequestBody Post post) {
+        Post storedPost = service.createPost(id, post);
+        if (storedPost == null) {
+            throw new UserNotFoundException("id-" + id);
+        }
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(post.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
+    }
 }
