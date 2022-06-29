@@ -140,4 +140,16 @@ public class UserJpaController {
 
         return ResponseEntity.created(location).build();
     }
+
+    @GetMapping(value = "/{id}/posts/{post_id}")
+    public Post retrievePostByPostId(@PathVariable(value = "id") int id,
+                                     @PathVariable(value = "post_id") int post_id) {
+        Post post = service.getPostByPostId(post_id);
+
+        if (post == null) {
+            throw new UserNotFoundException("POST-" + post_id);
+        }
+
+        return post;
+    }
 }

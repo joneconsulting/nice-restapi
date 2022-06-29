@@ -106,4 +106,10 @@ public class UserJpaService {
 
         return post;
     }
+
+    public Post getPostByPostId(int post_id) {
+        Optional<Post> post = postRepository.findById(post_id);
+
+        return post == null ? null : post.get();
+    }
 }
