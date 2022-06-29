@@ -1,5 +1,6 @@
 package com.example.myrestfulservice.service;
 
+import com.example.myrestfulservice.beans.Post;
 import com.example.myrestfulservice.beans.User;
 import com.example.myrestfulservice.repository.UserRepository;
 import com.example.myrestfulservice.vo.ResponseData;
@@ -13,6 +14,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -72,5 +74,16 @@ public class UserJpaService {
         userRepository.save(user); // update sql
 
         return user;
+    }
+
+    public List<Post> getAllPostsByUser(int id) {
+        Optional<User> _optional = userRepository.findById(id);
+
+        if (!_optional.isPresent()) {
+            return null;
+        }
+
+        return _optional.get().getPosts() == null || _optional.get().getPosts().isEmpty()
+                ? new ArrayList<>() : _optional.get().getPosts();
     }
 }

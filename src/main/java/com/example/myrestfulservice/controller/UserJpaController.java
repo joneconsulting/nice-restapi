@@ -1,5 +1,6 @@
 package com.example.myrestfulservice.controller;
 
+import com.example.myrestfulservice.beans.Post;
 import com.example.myrestfulservice.beans.User;
 import com.example.myrestfulservice.exception.UserNotFoundException;
 import com.example.myrestfulservice.service.UserDaoService;
@@ -110,5 +111,19 @@ public class UserJpaController {
         }
 
         return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    /*
+    Post
+     */
+    @GetMapping(value = "/{id}/posts")
+    public List<Post> retrieveAllPostsByUser(@PathVariable(value = "id") int id) {
+        List<Post> posts = service.getAllPostsByUser(id);
+
+        if (posts == null) {
+            throw new UserNotFoundException("ID-" + id);
+        }
+
+        return posts;
     }
 }
