@@ -52,4 +52,22 @@ public class UserJpaService {
 
         return savedUser;
     }
+
+    // update user set join_date=null, name='input name', password='input pwd', ssn='db ssn' where id=90001
+    public User updateUserById(int id, User user) { // {name, password}
+        Optional<User> _optional = userRepository.findById(id);
+
+        if (!_optional.isPresent()) {
+            return null;
+        }
+
+        User storedUser = _optional.get();
+
+        user.setId(id);
+        user.setSsn(storedUser.getSsn());
+        user.setJoinDate(storedUser.getJoinDate()); //user.setJoinDate(new Date());
+        userRepository.save(user); // update sql
+
+        return user;
+    }
 }

@@ -89,4 +89,16 @@ public class UserJpaController {
 
         return ResponseEntity.created(location).build();
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity updateUserById(@PathVariable(value = "id") int id,
+                                         @RequestBody User user) { // name, password
+        User updatedUser = service.updateUserById(id, user);
+
+        if (updatedUser == null) {
+            throw new UserNotFoundException("id-" + id);
+        }
+
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
 }
